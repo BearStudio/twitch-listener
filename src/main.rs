@@ -1,5 +1,7 @@
+use dotenv::dotenv;
 use firestore_db_and_auth::{documents, errors::Result, Credentials, ServiceSession};
 use serde::{Deserialize, Serialize};
+use std::env;
 use twitch_irc::login::StaticLoginCredentials;
 use twitch_irc::message::ServerMessage;
 use twitch_irc::ClientConfig;
@@ -45,9 +47,16 @@ fn get_question(message: ServerMessage) -> Option<Question> {
 
 #[tokio::main]
 pub async fn main() {
+    // Load environment variables in .env file.
+    dotenv().ok();
+
+    // Getting the env vars
+    let channel_login = env::var("CHANNEL_LOGIN").unwrap_or("bearstudiolive".to_string());
+    let credentials_file_path =
+        env::var("CREDENTIALS_FILE").expect("The credentials file path is required");
+
     // Create credentials object. You may as well do that programmatically.
-    let cred = Credentials::from_file("comments-on-stream-468cda9bc5a4.json")
-        .expect("Read credentials file");
+    let cred = Credentials::from_file(&credentials_file_path).expect("Read credentials file");
 
     // To use any of the Firestore methods, you need a session first. You either want
     // an impersonated session bound to a Firebase Auth user or a service account session.
@@ -75,7 +84,7 @@ pub async fn main() {
     });
 
     // join a channel
-    client.join("yoannfleurydev".to_owned());
+    client.join(channel_login);
 
     // keep the tokio executor alive.
     // If you return instead of waiting the background task will exit.

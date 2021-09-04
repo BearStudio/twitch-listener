@@ -5,6 +5,7 @@ name = "twitch-listener"
 version = "0.1.0"
 
 [dependencies]
+dotenv = "0.15.0"
 firestore-db-and-auth = "0.6"
 serde = "1.0"
 tokio = {version = "1.6", features = ["full"]}

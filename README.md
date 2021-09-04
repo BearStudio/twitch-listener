@@ -1,1 +1,1 @@
-# Twitch IRC Receiver
+# Twitch IRC Listener
